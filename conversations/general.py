@@ -1,9 +1,13 @@
 import datetime
 
-from telegram import ReplyKeyboardMarkup, ParseMode
+from telegram import ReplyKeyboardMarkup, ParseMode, ReplyKeyboardRemove
+from telegram.ext import ConversationHandler
 
 from replics.errors import SORRY
 from replics.hello import GREETINGS, description
+from vocabulary.general import isFindKeyword, isNo
+from vocabulary.article import isArticleKeyword
+from vocabulary.book import isBookKeyword
 from random import choice
 
 
@@ -27,24 +31,46 @@ class Handler:
         else:
             text = GREETINGS[3]
 
-        my_keyboard = ReplyKeyboardMarkup([['Посмотреть команды', 'Перейти к поиску']],
-                                          resize_keyboard=True)
+        my_keyboard = ReplyKeyboardMarkup([['Посмотреть команды', 'Поиск', 'Справочник']],
+                                          resize_keyboard=True, ReplyKeyboardRemove=True)
         self.message.reply_text(text.format(chat.first_name), reply_markup=my_keyboard,
                                 parse_mode=ParseMode.MARKDOWN)
+        return "general"
 
-    def mp(self, context):
-        my_keyboard = ReplyKeyboardMarkup([['/start', '/commands']])
-        self.message.reply_text("Тыки кнопку!", reply_markup=my_keyboard, parse_mode=ParseMode.MARKDOWN)
-
-    def getInfo(self, context):
-        pass
-
-    def all_message(self, context):
+    def general(self, context):
+        keyboard = ReplyKeyboardRemove()
         msg = self.message.text
-        print(msg)
         if msg == 'Посмотреть команды':
-            self.message.reply_text(description)
-        elif msg == 'Перейти к поиску':
-            self.message.reply_text("Хорошо, что мы сегодня ищем?")
+            keyboard = ReplyKeyboardMarkup([['Поиск']],
+                                           resize_keyboard=True)
+            self.message.reply_text("Извини, пока у меня нет команд :). "
+                                    "Что-нибудь ещё?", reply_markup=keyboard)
+            return "general"
+        elif isFindKeyword(msg):
+            self.message.reply_text("Хорошо, что мы сегодня ищем?", reply_markup=keyboard)
+            return "search"
+        else:
+            keyboard = ReplyKeyboardMarkup([['Искать']],
+                                           resize_keyboard=True)
+            self.message.reply_text(choice(SORRY), reply_markup=keyboard)
+            return "general"
+
+    def search(self, context):
+        msg = self.message.text
+        if isArticleKeyword(msg):
+            self.message.reply_text("Хорошо! Будем искать статью. Это конкретная статья?")
+            return "article"
+        elif isBookKeyword(msg):
+            self.message.reply_text("Хорошо! Будем искать журнал. Это конкретный журнал?")
+            return "book"
         else:
             self.message.reply_text(choice(SORRY))
+            return "search"
+
+    def all_message(self, context):
+        keyboard = ReplyKeyboardRemove()
+        msg = self.message.text
+        if isNo(msg):
+            return ConversationHandler.END
+        self.message.reply_text(choice(SORRY), reply_markup=keyboard)
+
