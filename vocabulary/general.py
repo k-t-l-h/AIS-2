@@ -9,11 +9,12 @@ YES = {"да", "верно", "правильно", "отлично", "точно
 NO = {"нет"}
 
 THEMES = {"о", "про", "тема"}
+JOKE = {"шутка", "анекдот", "шуточка", "прикол"}
 
 
 def isFindKeyword(text):
     flag = False
-
+    text = ReplaceSyn(text)
     morph = pymorphy2.MorphAnalyzer()
     words = text.split()
     for w in words:
@@ -25,7 +26,7 @@ def isFindKeyword(text):
 
 def isYes(text):
     flag = False
-
+    text = ReplaceSyn(text)
     morph = pymorphy2.MorphAnalyzer()
     words = text.split()
     for w in words:
@@ -37,7 +38,7 @@ def isYes(text):
 
 def isNo(text):
     flag = False
-
+    text = ReplaceSyn(text)
     morph = pymorphy2.MorphAnalyzer()
     words = text.split()
     for w in words:
@@ -49,6 +50,7 @@ def isNo(text):
 
 def isName(text):
     flag = False
+    text = ReplaceSyn(text)
     morph_vocab = MorphVocab()
     extractor = NamesExtractor(morph_vocab)
     matches = extractor(text)
@@ -60,7 +62,7 @@ def isName(text):
 
 def isThemeKeyword(text):
     flag = False
-
+    text = ReplaceSyn(text)
     morph = pymorphy2.MorphAnalyzer()
     words = text.split()
     for w in words:
@@ -68,3 +70,26 @@ def isThemeKeyword(text):
         if wn in THEMES:
             flag = True
     return flag
+
+
+def isJoke(text):
+    flag = False
+    text = ReplaceSyn(text)
+    morph = pymorphy2.MorphAnalyzer()
+    words = text.split()
+
+    for w in words:
+
+        wn = morph.parse(w)[0].normal_form
+        if wn in JOKE:
+            flag = True
+    return flag
+
+
+def ReplaceSyn(text):
+    text = text.replace("?", "")
+    text = text.replace(".", "")
+    text = text.replace(",", "")
+    text = text.replace(":", "")
+    text = text.replace("!", "")
+    return text
