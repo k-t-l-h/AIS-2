@@ -4,7 +4,7 @@ from telegram import ReplyKeyboardMarkup, ParseMode, ReplyKeyboardRemove
 from telegram.ext import ConversationHandler
 
 from replics.errors import SORRY, ALL
-from replics.hello import GREETINGS, JOKES
+from replics.hello import GREETINGS, JOKES,GOODBYE
 from vocabulary.general import isFindKeyword, isNo, isJoke
 from vocabulary.article import isArticleKeyword
 from vocabulary.book import isBookKeyword
@@ -63,25 +63,24 @@ class Handler:
             self.message.reply_text("Это что-то конкретное?")
             return "choose"
         elif isArticleKeyword(msg):
-            return "article_show"
-        elif isBookKeyword(msg) and isFindKeyword(msg):
-            return "book"
-        elif isBookKeyword(msg):
-            return "book_show"
+            self.message.reply_text("Что показать?")
+            print("HERE")
+            return "show"
         elif isNo(msg):
+            self.message.reply_text(choice(GOODBYE))
             return ConversationHandler.END
         else:
             self.message.reply_text(choice(SORRY))
-            return "all"
+            return ConversationHandler.END
 
     def search(self, context):
         msg = self.message.text
         if isArticleKeyword(msg):
             self.message.reply_text("Хорошо! Будем искать статью. Это конкретная статья?")
             return "article"
-        elif isBookKeyword(msg):
-            self.message.reply_text("Хорошо! Будем искать журнал. Это конкретный журнал?")
-            return "book"
+        #elif isBookKeyword(msg):
+            #self.message.reply_text("Хорошо! Будем искать журнал. Это конкретный журнал?")
+            #return "book"
         else:
             self.message.reply_text(choice(SORRY))
             return "search"
@@ -90,6 +89,7 @@ class Handler:
         keyboard = ReplyKeyboardRemove()
         msg = self.message.text
         if isNo(msg):
+            self.message.reply_text(choice(GOODBYE))
             return ConversationHandler.END
         self.message.reply_text(choice(SORRY), reply_markup=keyboard)
 

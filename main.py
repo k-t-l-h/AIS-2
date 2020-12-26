@@ -21,11 +21,11 @@ def start():
             "general": [MessageHandler(Filters.all, Handler.general)],
             "all": [MessageHandler(Filters.all, Handler.all)],
             "search":  [MessageHandler(Filters.all, Handler.search)],
-            "choose": [MessageHandler(Filters.all, Article.defined)],
-            "article": [MessageHandler(Filters.all, Article.choose)],
+            "choose": [MessageHandler(Filters.all, Article.choose)],
+            "article": [MessageHandler(Filters.all, Article.defined)],
             "defined": [MessageHandler(Filters.all, Article.defined)],
             "undefined": [MessageHandler(Filters.all, Article.undefined)],
-            "books": [MessageHandler(Filters.all, Book.start)],
+            "show": [MessageHandler(Filters.all, Article.find)],
         },
         fallbacks=[MessageHandler(Filters.all, Handler.all_message)]
     ))
