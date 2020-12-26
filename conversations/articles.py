@@ -6,6 +6,7 @@ from vocabulary.general import isYes, isName, isThemeKeyword, LoadData, NameExtr
 from replics import hello
 from random import choice
 
+
 class Article:
     def __init__(self):
         self.message = None
@@ -20,18 +21,16 @@ class Article:
             word = find_best(msg)
             self.message.reply_text(choice(hello.FINDED))
             self.message.reply_text(
-                "Название: {},\nЖурнал: {},\nРейтинг: {}" +
-                "\nАвторы {},\nПоле: {},\nDOI: {}".format(word.name, word.book, word.score,
-                                                          word.author, word.field, word.doi)
+                "Название: {},\nЖурнал: {},\nРейтинг: {}\nАвторы: {},\nПоле: {},\nDOI: {}".format(word.name, word.book, word.score, word.author, word.field, word.doi)
             )
-
-        elif isNewest(msg):
+        else:
             word = find_newest(msg)
             self.message.reply_text(choice(hello.FINDED))
             self.message.reply_text(
-                "Название: {},\nЖурнал: {},\nРейтинг: {}" +
-                "\nАвторы {},\nПоле: {},\nDOI: {}".format(word.name, word.book, word.score,
-                                                          word.author, word.field, word.doi)
+                "Название: {},\nЖурнал: {},\nРейтинг: {}\nАвторы: {},\nПоле: {},\nDOI: {}".format(word.name, word.book,
+                                                                                                  word.score,
+                                                                                                  word.author,
+                                                                                                  word.field, word.doi)
             )
         return ConversationHandler.END
 
@@ -56,18 +55,20 @@ class Article:
                 self.message.reply_text(choice(hello.UNFINDED))
                 return ConversationHandler.END
             else:
-                print(word.doi)
                 self.message.reply_text(choice(hello.FINDED))
                 self.message.reply_text(
-                    "Название: {},\nЖурнал: {},\nРейтинг: {}" +
-                    "\nАвторы {},\nПоле: {},\nDOI: {}".format(word.name, word.book, word.score,
-                                                              word.author, word.field, word.doi)
+                    "Название: {},\nЖурнал: {},\nРейтинг: {}\nАвторы: {},\nПоле: {},\nDOI: {}".format(word.name,
+                                                                                                      word.book,
+                                                                                                      word.score,
+                                                                                                      word.author,
+                                                                                                      word.field,
+                                                                                                      word.doi)
                 )
                 return ConversationHandler.END
 
         self.message.reply_text("Ищу по названию! ")
 
-        word, flag = find_by_name(msg)
+        word, flag = find_by_theme(msg)
         if flag:
             self.message.reply_text("Какое странное название...")
 
@@ -77,9 +78,10 @@ class Article:
         else:
             self.message.reply_text(choice(hello.FINDED))
             self.message.reply_text(
-                "Название: {},\nЖурнал: {},\nРейтинг: {}" +
-                "\nАвторы {},\nПоле: {},\nDOI: {}".format(word.name, word.book, word.score,
-                                                          word.author, word.field, word.doi)
+                "Название: {},\nЖурнал: {},\nРейтинг: {}\nАвторы: {},\nПоле: {},\nDOI: {}".format(word.name, word.book,
+                                                                                                  word.score,
+                                                                                                  word.author,
+                                                                                                  word.field, word.doi)
             )
             return ConversationHandler.END
 
@@ -95,14 +97,30 @@ class Article:
             else:
                 self.message.reply_text(choice(hello.FINDED))
                 self.message.reply_text(
-                    "Название: {},\nЖурнал: {},\nРейтинг: {}" +
-                    "\nАвторы {},\nПоле: {},\nDOI: {}".format(word.name, word.book, word.score,
-                                                              word.author, word.field, word.doi)
+                    "Название: {},\nЖурнал: {},\nРейтинг: {}\nАвторы: {},\nПоле: {},\nDOI: {}".format(word.name,
+                                                                                                      word.book,
+                                                                                                      word.score,
+                                                                                                      word.author,
+                                                                                                      word.field,
+                                                                                                      word.doi)
                 )
                 return ConversationHandler.END
         elif isThemeKeyword(msg):
-            self.message.reply_text("Ищу статью по теме")
-            return ConversationHandler.END
+            word = find_by_author(msg)
+            if word is None:
+                self.message.reply_text(choice(hello.UNFINDED))
+                return ConversationHandler.END
+            else:
+                self.message.reply_text(choice(hello.FINDED))
+                self.message.reply_text(
+                    "Название: {},\nЖурнал: {},\nРейтинг: {}\nАвторы: {},\nПоле: {},\nDOI: {}".format(word.name,
+                                                                                                      word.book,
+                                                                                                      word.score,
+                                                                                                      word.author,
+                                                                                                      word.field,
+                                                                                                      word.doi)
+                )
+                return ConversationHandler.END
         elif isName(msg):
             self.message.reply_text("Ищу статью по автору")
             word = find_by_author(msg)
@@ -112,9 +130,12 @@ class Article:
             else:
                 self.message.reply_text(choice(hello.FINDED))
                 self.message.reply_text(
-                    "Название: {},\nЖурнал: {},\nРейтинг: {}" +
-                    "\nАвторы {},\nПоле: {},\nDOI: {}".format(word.name, word.book, word.score,
-                                                              word.author, word.field, word.doi)
+                    "Название: {},\nЖурнал: {},\nРейтинг: {}\nАвторы: {},\nПоле: {},\nDOI: {}".format(word.name,
+                                                                                                      word.book,
+                                                                                                      word.score,
+                                                                                                      word.author,
+                                                                                                      word.field,
+                                                                                                      word.doi)
                 )
                 return ConversationHandler.END
         else:
@@ -122,13 +143,14 @@ class Article:
             return ConversationHandler.END
 
 
+
 def find_by_name(name):
     name = NameExtract(name)
     data = LoadData()
     for d in data:
         if d.author == name:
-            return d
-    return None
+            return d, True
+    return None, False
 
 
 def find_by_doi(name):
@@ -139,6 +161,25 @@ def find_by_doi(name):
         if d.doi == t:
             return d
     return None
+
+def find_by_theme(name):
+    morph = pymorphy2.MorphAnalyzer()
+    words = name.split()
+    words2 = []
+    for w in words:
+        w2 = morph.parse(w)[0].normal_form
+        w2 = str(w2)
+        w2 = w2.lower()
+        words2.append(w2)
+    data = LoadData()
+    for d in data:
+        words = d.name
+        words = str(words).lower()
+        words = words.split()
+        for w in words:
+            if any(morph.parse(w)[0].normal_form in w2 for w2 in words2):
+                return d, False
+    return None, False
 
 
 def find_by_book(name):

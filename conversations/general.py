@@ -41,7 +41,7 @@ class Handler:
         keyboard = ReplyKeyboardRemove()
         msg = self.message.text
         if msg == 'Посмотреть команды':
-            keyboard = ReplyKeyboardMarkup([['Поиск']],
+            keyboard = ReplyKeyboardMarkup([['Теперь можно и поболтать']],
                                            resize_keyboard=True)
             self.message.reply_text("Являются ли команды допустимыми в диалоговых системах? "
                                     "Вот и я не знаю... Так что пока у меня нет команд. "
@@ -63,8 +63,7 @@ class Handler:
             self.message.reply_text("Это что-то конкретное?")
             return "choose"
         elif isArticleKeyword(msg):
-            self.message.reply_text("Что показать?")
-            print("HERE")
+            self.message.reply_text("Показать лучшую или новую?")
             return "show"
         elif isNo(msg):
             self.message.reply_text(choice(GOODBYE))
